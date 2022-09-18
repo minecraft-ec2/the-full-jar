@@ -1,0 +1,15 @@
+# Dependencies
+**/node_modules
+
+# Folder with config files from Firebase, AWS, etc.
+config
+
+# JSON files with configuration
+**/config.json
+
+# Firebase Configuration: run [firebase init] (https://www.npmjs.com/package/firebase-tools)
+.firebaserc
+firebase.json
+
+# Logs
+*.log
