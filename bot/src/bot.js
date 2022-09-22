@@ -28,9 +28,9 @@ function generateEmbed(color) {
     return new EmbedBuilder()
         .setColor(color)
         .setTitle('Server Status')
-        .setDescription(config.EMBED.DESCRIPTION)
+        .setDescription(config.EMBED_DESCRIPTION)
         .setTimestamp()
-        .setFooter({ text: 'AWS Reporter', iconURL: config.EMBED.FOOTER_ICON_URL });
+        .setFooter({ text: 'AWS Reporter', iconURL: config.EMBED_FOOTER_ICON_URL });
 };
 
 async function sendButtons(channel, disableFirstButton = false) {
