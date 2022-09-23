@@ -6,6 +6,7 @@ const { Client,
     EmbedBuilder,
     Colors
 } = require('discord.js');
+
 const { Instance } = require('./services/ec2');
 
 const config = require('./config.json');
@@ -60,15 +61,18 @@ client.once('ready', async () => {
 client.on('interactionCreate', async interaction => {
     if (!interaction.isButton()) return;
 
-    await sendButtons(interaction.channel, true);
-
     const isRefresh = interaction.customId === 'refresh-status';
     const currentStatus = await instance.status();
     const status = isRefresh || currentStatus === 'running' ? currentStatus : 'pending';
+    const canStart = !isRefresh && config.DISABLED === false;
 
-    if (!isRefresh && config.DISABLED === false) {
-        await instance.start();
+    if (canStart) {
+        if (isHours()) {
+            await instance.start();
+        }
     }
+
+    await sendButtons(interaction.channel, canStart);
     interaction.channel.send({ embeds: [generateEmbed(STATUS_COLORS[status])] });
 });
 
