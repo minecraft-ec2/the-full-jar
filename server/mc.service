@@ -5,7 +5,7 @@ Wants=network-online.target
 
 [Service]
 Type=forking
-ExecStart=/bin/bash /home/ubuntu/minecraft-ec2/server/start.shs
+ExecStart=/bin/bash /home/ubuntu/minecraft-ec2/server/start.sh
 
 [Install]
 WantedBy=multi-user.target
