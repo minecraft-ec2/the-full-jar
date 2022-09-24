@@ -19,10 +19,11 @@ const client = new Client({
     ]
 }),
     STATUS_COLORS = {
-        stopped: Colors.Red,
-        pending: Colors.Orange,
-        stopping: Colors.Orange,
-        running: Colors.Green,
+        stopped: 0xed4245,
+        pending: 0xe67e22,
+        stopping: 0xe67e22,
+        running: 0x57f287,
+        terminated: 0x2c2f33
     }, instance = new Instance(config.INSTANCE_ID);
 
 function generateEmbed(color) {
@@ -73,6 +74,7 @@ client.on('interactionCreate', async interaction => {
     }
 
     await sendButtons(interaction.channel, canStart);
+    console.log(status)
     interaction.channel.send({ embeds: [generateEmbed(STATUS_COLORS[status])] });
 });
 
