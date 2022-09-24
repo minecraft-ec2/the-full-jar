@@ -1,8 +1,11 @@
 #/bin/bash
 
-echo $1 > server/server.pipe 
+cd $MC_SERVER_PATH
+
+echo $1 > server.pipe
 
 if [ "$1" = "stop" ]; then
-    rm server/server.pipe
+    rm server.pipe
+    cd ..
     rm out
 fi

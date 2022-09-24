@@ -1,5 +1,5 @@
-#/bin/bash
-cd server
+#/usr/bin/bash
+cd $MC_SERVER_PATH
 
 rm server.pipe
 

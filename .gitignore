@@ -13,3 +13,6 @@ firebase.json
 
 # Logs
 *.log
+
+# Server Cache
+server/server
