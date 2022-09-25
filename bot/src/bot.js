@@ -70,7 +70,7 @@ client.on('interactionCreate', async interaction => {
     const canStart =
         !isRefresh
         &&
-        config.DISABLED === false
+        config.DISABLED === true
         &&
         isHours()
         &&
