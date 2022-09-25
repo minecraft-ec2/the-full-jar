@@ -3,8 +3,7 @@ const { Client,
     ActionRowBuilder,
     ButtonBuilder,
     ButtonStyle,
-    EmbedBuilder,
-    Colors
+    EmbedBuilder
 } = require('discord.js');
 
 const { Instance } = require('./services/ec2');
@@ -18,7 +17,7 @@ const client = new Client({
         GatewayIntentBits.MessageContent,
     ]
 }),
-    STATUS_COLORS = {
+    colors = {
         stopped: 0xed4245,
         pending: 0xe67e22,
         stopping: 0xe67e22,
@@ -26,11 +25,14 @@ const client = new Client({
         terminated: 0x2c2f33
     }, instance = new Instance(config.INSTANCE_ID);
 
-function generateEmbed(color) {
+function generateEmbed(color, username) {
     return new EmbedBuilder()
         .setColor(color)
         .setTitle('Server Status')
         .setDescription(config.EMBED_DESCRIPTION)
+        .addFields(
+            { name: '\u200BStarted By', value: '@' + username, inline: true },
+        )
         .setTimestamp()
         .setFooter({ text: 'AWS Reporter', iconURL: config.EMBED_FOOTER_ICON_URL });
 };
@@ -64,18 +66,27 @@ client.on('interactionCreate', async interaction => {
 
     const isRefresh = interaction.customId === 'refresh-status';
     const currentStatus = await instance.status();
-    const status = isRefresh || currentStatus === 'running' ? currentStatus : 'pending';
-    const canStart = !isRefresh && config.DISABLED === false;
+    const color = colors[isRefresh || currentStatus === 'running' ? currentStatus.toString() : 'pending'];
+    const canStart =
+        !isRefresh
+        &&
+        config.DISABLED === false
+        &&
+        isHours()
+        &&
+        currentStatus !== 'running';
 
-    if (canStart) {
-        if (isHours()) {
-            await instance.start();
-        }
-    }
+    if (canStart) await instance.start();
 
     await sendButtons(interaction.channel, canStart);
-    console.log(status)
-    interaction.channel.send({ embeds: [generateEmbed(STATUS_COLORS[status])] });
+    interaction.channel.send({
+        embeds: [
+            generateEmbed(
+                color,
+                interaction.member.displayName
+            )
+        ]
+    });
 });
 
 client.login(config.BOT_TOKEN);
