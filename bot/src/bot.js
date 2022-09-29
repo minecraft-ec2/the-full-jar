@@ -5,10 +5,11 @@ const { Client,
     ButtonStyle,
     EmbedBuilder
 } = require('discord.js');
+const { EC2Client } = require('@aws-sdk/client-ec2');
 
 const { Instance } = require('./services/ec2');
 
-const config = require('./config.json');
+process.env = Object.assign(process.env, require('./config.json'));
 
 const client = new Client({
     intents: [
@@ -23,18 +24,26 @@ const client = new Client({
         stopping: 0xe67e22,
         running: 0x57f287,
         terminated: 0x2c2f33
-    }, instance = new Instance(config.INSTANCE_ID);
+    }, instance = new Instance(process.env.INSTANCE_ID, new EC2Client({
+        region: 'us-west-1',
+        credentials: {
+            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
+            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
+        }
+    }));
 
-function generateEmbed(color, username) {
+
+function generateEmbed(color, username, ip) {
     return new EmbedBuilder()
         .setColor(color)
         .setTitle('Server Status')
-        .setDescription(config.EMBED_DESCRIPTION)
+        .setDescription(process.env.EMBED_DESCRIPTION)
         .addFields(
             { name: '\u200BStarted By', value: '@' + username, inline: true },
+            { name: 'IP', value: ip.toString(), inline: true },
         )
         .setTimestamp()
-        .setFooter({ text: 'AWS Reporter', iconURL: config.EMBED_FOOTER_ICON_URL });
+        .setFooter({ text: 'AWS Reporter', iconURL: process.env.EMBED_FOOTER_ICON_URL });
 };
 
 async function sendButtons(channel, disableFirstButton = false) {
@@ -57,7 +66,7 @@ async function sendButtons(channel, disableFirstButton = false) {
 };
 
 client.once('ready', async () => {
-    const channel = client.channels.cache.get(config.CHANNEL_ID);
+    const channel = client.channels.cache.get(process.env.CHANNEL_ID);
     await sendButtons(channel);
 });
 
@@ -70,7 +79,7 @@ client.on('interactionCreate', async interaction => {
     const canStart =
         !isRefresh
         &&
-        config.DISABLED === true
+        process.env.DISABLED === true
         &&
         isHours()
         &&
@@ -83,10 +92,11 @@ client.on('interactionCreate', async interaction => {
         embeds: [
             generateEmbed(
                 color,
-                interaction.member.displayName
+                interaction.member.displayName,
+                await instance.ip()
             )
         ]
     });
 });
 
-client.login(config.BOT_TOKEN);
+client.login(process.env.BOT_TOKEN);

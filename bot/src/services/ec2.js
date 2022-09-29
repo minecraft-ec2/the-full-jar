@@ -1,22 +1,21 @@
 const {
     EC2Client,
     StartInstancesCommand,
-    DescribeInstanceStatusCommand
+    DescribeInstanceStatusCommand,
+    DescribeAddressesCommand
 } = require('@aws-sdk/client-ec2');
-
-const client = new EC2Client({ region: 'us-west-1' });
+const axios = require('axios');
 
 class Instance {
-    params;
-
-    constructor(id) {
+    constructor(id, client) {
         if (id == null) throw new Error('Instance id is required');
         this.params = { InstanceIds: [id] };
+        this.client = client;
     }
 
     async status() {
         try {
-            const response = await client.send(
+            const response = await this.client.send(
                 new DescribeInstanceStatusCommand({
                     ...this.params,
                     IncludeAllInstances: true
@@ -32,7 +31,7 @@ class Instance {
 
     async start() {
         try {
-            const response = await client.send(
+            const response = await this.client.send(
                 new StartInstancesCommand(this.params)
             );
 
@@ -40,6 +39,16 @@ class Instance {
         } catch (err) {
             return err;
         }
+    }
+
+    async ip() {
+        const response = await axios({
+            url: process.env.IP_ENDPOINT,
+            headers: {
+                'Authorization': process.env.IP_API_KEY
+            }
+        });
+        return response.data.ip;
     }
 }
 

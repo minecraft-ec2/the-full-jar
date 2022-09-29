@@ -5,6 +5,8 @@ const {
     DescribeInstanceStatusCommand
 } = require('@aws-sdk/client-ec2');
 
+process.env = Object.assign(process.env, require('../config/aws.json'));
+
 const client = new EC2Client({ region: process.env.REGION || 'us-west-1' });
 
 class Instance {
