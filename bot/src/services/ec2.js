@@ -5,7 +5,6 @@ const {
     DescribeAddressesCommand
 } = require('@aws-sdk/client-ec2');
 const axios = require('axios');
-
 class Instance {
     constructor(id, client) {
         if (id == null) throw new Error('Instance id is required');
