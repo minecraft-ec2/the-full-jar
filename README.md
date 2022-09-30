@@ -13,3 +13,7 @@ Note that this code is fine-tuned towards Ubuntu 22.04 with 4 GB of memory.
 
 ### Hidden Files:
 Both `functions/src` & `bot/src` contain `config.jsoplications might need. (e.g: Discord embed data)n` in production. This file stores both the `AWS IAM` credentials, the Discord bot credentials, as well as any extra static data the respective applications might need. (e.g: Discord embed data)
+
+------------------
+
+**Main Developer**: [humanfriend22](https://github.com/humanfriend22)
