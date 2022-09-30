@@ -8,6 +8,7 @@ const { Client,
 const { EC2Client } = require('@aws-sdk/client-ec2');
 
 const { Instance } = require('./services/ec2');
+const { isHours } = require('./services/time');
 
 process.env = Object.assign(process.env, require('./config.json'));
 
@@ -79,15 +80,19 @@ client.on('interactionCreate', async interaction => {
     const canStart =
         !isRefresh
         &&
-        process.env.DISABLED == true
+        process.env.DISABLED == 'false'
         &&
         isHours()
         &&
         currentStatus !== 'running';
 
     if (canStart) await instance.start();
+    //console.debug(!isRefresh, process.env.DISABLED, isHours(), currentStatus !== 'running')
 
+    // Update Buttons
     await sendButtons(interaction.channel, canStart);
+
+    // Update Discord Embed
     interaction.channel.send({
         embeds: [
             generateEmbed(
