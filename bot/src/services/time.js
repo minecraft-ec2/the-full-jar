@@ -24,5 +24,3 @@ exports.isHours = () => {
         :
         now > weekendStart && now < weekendEnd);
 };
-
-console.log(this.isHours())
