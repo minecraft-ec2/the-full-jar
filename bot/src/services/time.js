@@ -1,3 +1,5 @@
+const axios = require('axios');
+
 const setup = () => {
     const weekdayStart = new Date(),
         weekendStart = new Date(),
@@ -15,9 +17,12 @@ const setup = () => {
 const isWeekday = () => [1, 2, 3, 4, 5].includes((new Date()).getDay());
 
 
-exports.isHours = () => {
+exports.isHours = async () => {
     const { weekdayStart, weekdayEnd, weekendStart, weekendEnd } = setup();
-    const now = new Date();
+    const { data: response } = await axios({
+        url: 'https://timeapi.io/api/Time/current/zone?timeZone=America/Los_Angeles',
+    });
+    const now = new Date(response.dateTime);
 
     return (isWeekday() ?
         now > weekdayStart && now < weekdayEnd

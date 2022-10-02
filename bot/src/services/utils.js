@@ -14,7 +14,7 @@ exports.generateEmbed = (color, username, ip) => {
 };
 
 exports.sendButtons = async (channel, disableFirstButton = false) => {
-    await channel.bulkDelete(4);
+    await channel.bulkDelete(10);
 
     const ButtonRow = new ActionRowBuilder()
         .addComponents(
