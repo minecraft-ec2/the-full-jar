@@ -62,6 +62,7 @@ client.on('interactionCreate', async interaction => {
             )
         ]
     });
+    interaction.channel.send({ content: "**Please don't click 'Start Server' for no reason!**" });
 });
 
 client.login(process.env.BOT_TOKEN);
