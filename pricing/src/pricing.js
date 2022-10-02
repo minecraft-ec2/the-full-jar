@@ -1,7 +1,7 @@
 import { table } from 'table';
 
 // Input
-const instancePricing = 0.0552;
+const instancePricing = 0.096;
 
 const weekdayHours = 6.5;
 const weekendHours = 12;
@@ -36,7 +36,7 @@ const round = (float) => (Math.round(float * 100) / 100).toFixed(2);
 
 for (let i = 1; i < data.length; i++) {
     const [text, float] = data[i];
-    data[i][1] = '$' + round(float);
+    data[i][1] = '$' + float;
 }
 
 console.clear();

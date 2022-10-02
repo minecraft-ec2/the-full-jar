@@ -11,7 +11,9 @@ exports.stop = functions.pubsub
     .schedule('0 23 * * *')
     .timeZone('America/Los_Angeles')
     .onRun(async () => {
-        functions.logger.info(await instance.stop());
+        functions.logger.info((await Promise.all([
+            instance.stop(), setIP("null")
+        ]))[0]);
     });
 
 const api = express();
@@ -37,8 +39,6 @@ api.get('/ip', async (req, res) => {
 
 api.post('/ip', async (req, res) => {
     let reason = '';
-    console.log(JSON.parse(req.body));
-    functions.logger.error('Custom Error: ' + JSON.parse(req.body).ip);
 
     if (req.headers.authorization == null) reason = 'absent authorization header';
     else if (req.headers.authorization !== await getAPIKEY()) reason = 'invalid authorization header';
