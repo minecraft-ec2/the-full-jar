@@ -1,14 +1,9 @@
-const { Client,
-    GatewayIntentBits,
-    ActionRowBuilder,
-    ButtonBuilder,
-    ButtonStyle,
-    EmbedBuilder
-} = require('discord.js');
+const { Client, GatewayIntentBits } = require('discord.js');
 const { EC2Client } = require('@aws-sdk/client-ec2');
 
 const { Instance } = require('./services/ec2');
 const { isHours } = require('./services/time');
+const { generateEmbed, sendButtons } = require('./services/utils');
 
 process.env = Object.assign(process.env, require('./config.json'));
 
@@ -33,39 +28,6 @@ const client = new Client({
         }
     }));
 
-
-function generateEmbed(color, username, ip) {
-    return new EmbedBuilder()
-        .setColor(color)
-        .setTitle('Server Status')
-        .setDescription(process.env.EMBED_DESCRIPTION)
-        .addFields(
-            { name: '\u200BStarted By', value: '@' + username, inline: true },
-            { name: 'IP', value: ip.toString(), inline: true },
-        )
-        .setTimestamp()
-        .setFooter({ text: 'AWS Reporter', iconURL: process.env.EMBED_FOOTER_ICON_URL });
-};
-
-async function sendButtons(channel, disableFirstButton = false) {
-    await channel.bulkDelete(4);
-
-    const ButtonRow = new ActionRowBuilder()
-        .addComponents(
-            new ButtonBuilder()
-                .setCustomId('start-server')
-                .setLabel('Start Server')
-                .setStyle(ButtonStyle.Danger)
-                .setDisabled(disableFirstButton),
-            new ButtonBuilder()
-                .setCustomId('refresh-status')
-                .setLabel('Refresh')
-                .setStyle(ButtonStyle.Primary)
-        );
-
-    channel.send({ components: [ButtonRow] });
-};
-
 client.once('ready', async () => {
     const channel = client.channels.cache.get(process.env.CHANNEL_ID);
     await sendButtons(channel);
@@ -76,21 +38,19 @@ client.on('interactionCreate', async interaction => {
 
     const isRefresh = interaction.customId === 'refresh-status';
     const currentStatus = await instance.status();
-    const color = colors[isRefresh || currentStatus === 'running' ? currentStatus.toString() : 'pending'];
+    const isRunning = currentStatus === 'running';
+    const color = colors[isRefresh || isRunning ? currentStatus.toString() : 'pending'];
     const canStart =
         !isRefresh
         &&
         process.env.DISABLED == 'false'
         &&
-        isHours()
-        &&
-        currentStatus !== 'running';
+        isHours();
 
-    if (canStart) await instance.start();
-    //console.debug(!isRefresh, process.env.DISABLED, isHours(), currentStatus !== 'running')
+    if (canStart && !isRunning) await instance.start();
 
     // Update Buttons
-    await sendButtons(interaction.channel, canStart);
+    await sendButtons(interaction.channel, canStart || isRunning);
 
     // Update Discord Embed
     interaction.channel.send({

@@ -1,8 +1,6 @@
 const {
-    EC2Client,
     StartInstancesCommand,
-    DescribeInstanceStatusCommand,
-    DescribeAddressesCommand
+    DescribeInstanceStatusCommand
 } = require('@aws-sdk/client-ec2');
 const axios = require('axios');
 class Instance {
