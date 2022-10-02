@@ -37,20 +37,20 @@ api.get('/ip', async (req, res) => {
     res.json(error).end();
 });
 
-api.post('/ip', async (req, res) => {
+api.post('/ip', async ({ headers, body }, res) => {
     let reason = '';
 
-    if (req.headers.authorization == null) reason = 'absent authorization header';
-    else if (req.headers.authorization !== await getAPIKEY()) reason = 'invalid authorization header';
-    else if (!isV4Format(JSON.parse(req.body).ip)) reason = 'invalid IP';
+    if (headers.authorization == null) reason = 'absent authorization header';
+    else if (headers.authorization !== await getAPIKEY()) reason = 'invalid authorization header';
+    else if (!isV4Format(body.ip)) reason = 'invalid IP';
     else {
-        await setIP(JSON.parse(req.body).ip);
-        functions.logger.info('Successfully updated IP', req.body);
-        res.json({ status: 'success', body: req.body }).end();
+        await setIP(body.ip);
+        functions.logger.info('Successfully updated IP', body);
+        res.json({ status: 'success', body }).end();
         return;
     };
 
-    const error = { status: 'failed', reason, body: req.body };
+    const error = { status: 'failed', reason, body };
     functions.logger.error(error);
     res.status(400 + (reason === 'invalid IP' ? 0 : 1)).json(error).end();
 });
