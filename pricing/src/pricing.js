@@ -1,10 +1,10 @@
 import { table } from 'table';
 
 // Input
-const instancePricing = 0.096;
+const instancePricing = 0.0992;
 
-const weekdayHours = 6.5;
-const weekendHours = 12;
+const weekdayHours = 4.5;
+const weekendHours = 11;
 
 // Calculation
 const weekdayPricing = weekdayHours * instancePricing;
@@ -15,7 +15,7 @@ const weekendPricing = weekendDayPricing * 2;
 
 const weeklyPricing = weekendPricing + weekdayPricing;
 
-const monthlyPricing = (weeklyPricing * 4) + 0.10;
+const monthlyPricing = (weeklyPricing * 4);
 
 const yearlyPricing = monthlyPricing * 12;
 

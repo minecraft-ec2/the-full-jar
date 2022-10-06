@@ -3,8 +3,7 @@
     "private": true,
     "main": "src/bot.js",
     "scripts": {
-        "start": "sudo systemd-run --scope -p MemoryLimit=100M ./src/start.sh",
-        "dev": "node ."
+        "format": "npm install && pwd"
     },
     "dependencies": {
         "@aws-sdk/client-ec2": "^3.172.0",

@@ -4,10 +4,10 @@ exports.generateEmbed = (color, username, ip) => {
     return new EmbedBuilder()
         .setColor(color)
         .setTitle('Server Status')
-        .setDescription(process.env.EMBED_DESCRIPTION)
+        .setDescription('The embed color indicates the status of the server. This can be updated with the Refresh button.')
         .addFields(
             { name: '\u200BStarted By', value: '@' + username, inline: true },
-            { name: 'IP', value: ip.toString(), inline: true },
+            { name: 'IP', value: ip, inline: true },
         )
         .setTimestamp()
         .setFooter({ text: 'AWS Reporter', iconURL: process.env.EMBED_FOOTER_ICON_URL });

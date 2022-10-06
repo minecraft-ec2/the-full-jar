@@ -1,52 +1,23 @@
-const {
-    StartInstancesCommand,
-    DescribeInstanceStatusCommand
-} = require('@aws-sdk/client-ec2');
 const axios = require('axios');
-class Instance {
-    constructor(id, client) {
-        if (id == null) throw new Error('Instance id is required');
-        this.params = { InstanceIds: [id] };
-        this.client = client;
-    }
 
-    async status() {
+const headers = { 'Authorization': process.env.API_KEY };
+
+exports.instance = {
+    start: async () => {
         try {
-            const response = await this.client.send(
-                new DescribeInstanceStatusCommand({
-                    ...this.params,
-                    IncludeAllInstances: true
-                })
-            );
-
-            return response.InstanceStatuses[0].InstanceState.Name;
+            const response = await axios({ method: 'POST', url: process.env.API_ENDPOINT + '/server/start', headers });
         } catch (err) {
-            return err;
+            return false;
         };
+        return true;
+    },
+    status: async () => {
+        const response = await axios({ url: process.env.API_ENDPOINT + '/server/status', headers });
 
-    }
-
-    async start() {
-        try {
-            const response = await this.client.send(
-                new StartInstancesCommand(this.params)
-            );
-
-            return response.StartingInstances[0].PreviousState.Name;
-        } catch (err) {
-            return err;
-        }
-    }
-
-    async ip() {
-        const response = await axios({
-            url: process.env.IP_ENDPOINT,
-            headers: {
-                'Authorization': process.env.IP_API_KEY
-            }
-        });
+        return response.data.status;
+    },
+    ip: async () => {
+        const response = await axios({ url: process.env.API_ENDPOINT + '/ip', headers });
         return response.data.ip;
     }
-}
-
-exports.Instance = Instance;
+};

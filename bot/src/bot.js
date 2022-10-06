@@ -1,11 +1,10 @@
+process.env = Object.assign(process.env, require(process.env.NODE_ENV !== 'production' ? './config.json' : '/etc/secrets/config.json'));
+
 const { Client, GatewayIntentBits } = require('discord.js');
 const { EC2Client } = require('@aws-sdk/client-ec2');
 
-const { Instance } = require('./services/ec2');
-const { isHours } = require('./services/time');
+const { instance } = require('./services/ec2');
 const { generateEmbed, sendButtons } = require('./services/utils');
-
-process.env = Object.assign(process.env, require('./config.json'));
 
 const client = new Client({
     intents: [
@@ -20,13 +19,7 @@ const client = new Client({
         stopping: 0xe67e22,
         running: 0x57f287,
         terminated: 0x2c2f33
-    }, instance = new Instance(process.env.INSTANCE_ID, new EC2Client({
-        region: 'us-west-1',
-        credentials: {
-            accessKeyId: process.env.AWS_ACCESS_KEY_ID,
-            secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY,
-        }
-    }));
+    };
 
 client.once('ready', async () => {
     const channel = client.channels.cache.get(process.env.CHANNEL_ID);
@@ -39,18 +32,21 @@ client.on('interactionCreate', async interaction => {
     const isRefresh = interaction.customId === 'refresh-status';
     const currentStatus = await instance.status();
     const isRunning = currentStatus === 'running';
-    const color = colors[isRefresh || isRunning ? currentStatus.toString() : 'pending'];
-    const canStart =
-        !isRefresh
-        &&
-        process.env.DISABLED == 'false'
-        &&
-        isHours();
+    const canStart = !isRefresh && process.env.DISABLED == 'false';
+    const disable = !isRunning && canStart;
 
-    if (canStart && !isRunning) await instance.start();
+    if (canStart) {
+        if (!await instance.start()) {
+            const now = new Date();
+            await interaction.user.send(`You can't start the server right now! _${now.toISOString()}_`);
+        }
+    };
+
+    console.debug(!isRunning && canStart, canStart, !isRefresh, process.env.DISABLED == 'false');
+    const color = colors[disable ? currentStatus : 'pending'];
 
     // Update Buttons
-    await sendButtons(interaction.channel, canStart || isRunning);
+    await sendButtons(interaction.channel, !disable);
 
     // Update Discord Embed
     interaction.channel.send({
@@ -62,7 +58,8 @@ client.on('interactionCreate', async interaction => {
             )
         ]
     });
-    interaction.channel.send({ content: "**Please don't click 'Start Server' for no reason!**" });
+    await interaction.channel.send({ content: "**Please don't click 'Start Server' for no reason!**" });
+
 });
 
 client.login(process.env.BOT_TOKEN);

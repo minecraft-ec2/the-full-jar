@@ -58,4 +58,4 @@ class Instance {
     }
 }
 
-exports.Instance = Instance;
+exports.instance = new Instance(process.env.INSTANCE_ID);
