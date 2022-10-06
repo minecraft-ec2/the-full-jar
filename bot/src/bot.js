@@ -1,7 +1,6 @@
 process.env = Object.assign(process.env, require(process.env.NODE_ENV !== 'production' ? './config.json' : '/etc/secrets/config.json'));
 
 const { Client, GatewayIntentBits } = require('discord.js');
-const { EC2Client } = require('@aws-sdk/client-ec2');
 
 const { instance } = require('./services/ec2');
 const { generateEmbed, sendButtons } = require('./services/utils');
