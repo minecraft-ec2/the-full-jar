@@ -32,21 +32,20 @@ client.on('interactionCreate', async interaction => {
     const isRefresh = interaction.customId === 'refresh-status';
     const currentStatus = await instance.status();
     const isRunning = currentStatus === 'running';
-    const canStart = !isRefresh && process.env.DISABLED == 'false';
-    const disable = !isRunning && canStart;
+    let canStart = !isRefresh && process.env.DISABLED == 'false';
 
     if (canStart) {
         if (!await instance.start()) {
             const now = new Date();
             await interaction.user.send(`You can't start the server right now! _${now.toISOString()}_`);
+            canStart = false;
         }
     };
 
-    console.debug(!isRunning && canStart, canStart, !isRefresh, process.env.DISABLED == 'false');
-    const color = colors[disable ? currentStatus : 'pending'];
+    const color = colors[canStart ? 'pending' : currentStatus];
 
     // Update Buttons
-    await sendButtons(interaction.channel, !disable);
+    await sendButtons(interaction.channel, canStart);
 
     // Update Discord Embed
     interaction.channel.send({
