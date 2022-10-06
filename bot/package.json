@@ -3,11 +3,14 @@
     "private": true,
     "main": "src/bot.js",
     "scripts": {
-        "format": "npm install && pwd"
+        "start": "npm install && node ."
     },
     "dependencies": {
         "@aws-sdk/client-ec2": "^3.172.0",
         "axios": "^0.27.2",
         "discord.js": "^14.3.0"
+    },
+    "engines": {
+        "node": ">= v16.17.1"
     }
 }
