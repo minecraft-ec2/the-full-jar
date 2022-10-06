@@ -3,6 +3,7 @@
     "private": true,
     "main": "src/bot.js",
     "scripts": {
+        "format": "cd .. && rm -rf functions pricing server README.md && cd bot",
         "start": "npm install && node ."
     },
     "dependencies": {
