@@ -1,7 +1,6 @@
 const { Router } = require('express');
 const { instance } = require('../services/ec2');
 const { isHours } = require('../helpers/time');
-const { ConversionTaskFilterSensitiveLog } = require('@aws-sdk/client-ec2');
 
 const router = new Router();
 
@@ -16,6 +15,10 @@ router.post('/start', async (req, res) => {
 
 router.get('/status', async (req, res) => {
     res.status(200).json({ status: await instance.status() }).end();
+});
+
+router.get('/ishours', async (req, res) => {
+    res.json({ data: await isHours() }).end();
 });
 
 exports.router = router;

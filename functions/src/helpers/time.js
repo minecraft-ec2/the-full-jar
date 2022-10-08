@@ -2,11 +2,25 @@ const axios = require('axios');
 const { getTimes } = require('../services/database');
 
 const isWeekday = (today) => ([1, 2, 3, 4, 5].includes(today.getDay()));
-const inTimeFrame = (start, end, today) => today.getHours() >= start.getHours() && today.getHours() < end.getHours() ? true : today.getMinutes() < end.getMinutes();
+const inTimeFrame = (start, end, today) => {
+    if (today.getHours() > start.getHours()) {
+        if (today.getHours() < end.getHours()) {
+            return true;
+        } else if (today.getMinutes() < end.getMinutes() - 10) {
+            return true;
+        }
+    } else if (today.getHours() == start.getHours()) {
+        if (today.getMinutes() > start.getMinutes()) {
+            return true;
+        }
+    }
+    return false;
+};
 
-exports.isHours = async () => {
+exports.isHours = async (times) => {
     // Get the time frames
-    const times = await getTimes();
+    if (process.env.NODE_ENV !== 'test') times = await getTimes();
+    //const times = await getTimes();
     const today = new Date((await axios({
         method: 'GET',
         url: 'https://timeapi.io/api/Time/current/zone',

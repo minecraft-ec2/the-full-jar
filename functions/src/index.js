@@ -10,12 +10,12 @@ const stop = async () => {
 };
 
 exports.weekday = functions.pubsub
-    .schedule('0 18 * * 1-5')
+    .schedule('0 20 * * 1-5')
     .timeZone('America/Los_Angeles')
     .onRun(stop);
 
 exports.weekend = functions.pubsub
-    .schedule('0 23 * * 0,6')
+    .schedule('0 21 * * 0,6')
     .timeZone('America/Los_Angeles')
     .onRun(stop);
 
