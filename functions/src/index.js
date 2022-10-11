@@ -28,8 +28,6 @@ api.use(require('cors')(
 api.use(async ({ headers }, res, next) => {
     let reason;
 
-    console.log(headers.authorization == null)
-
     if (headers.authorization == null) reason = 'absent authorization header';
     else if (headers.authorization !== await getAPIKEY()) reason = 'invalid authorization header';
 

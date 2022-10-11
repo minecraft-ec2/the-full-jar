@@ -9,7 +9,7 @@ router.post('/start', async (req, res) => {
         await instance.start()
         res.status(200).json({}).end();
     } else {
-        res.status(401).json({ reason: 'out of time bounds' })
+        res.status(401).json({ reason: 'out of time bounds' }).end();
     }
 });
 
@@ -17,8 +17,9 @@ router.get('/status', async (req, res) => {
     res.status(200).json({ status: await instance.status() }).end();
 });
 
-router.get('/ishours', async (req, res) => {
-    res.json({ data: await isHours() }).end();
+router.get('/canStart', async (req, res) => {
+    console.log(await isHours());
+    res.end('See Logs!');
 });
 
 exports.router = router;
