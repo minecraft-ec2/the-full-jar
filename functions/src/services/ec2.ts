@@ -1,9 +1,9 @@
-const {
+import {
     EC2Client,
     StartInstancesCommand,
     StopInstancesCommand,
     DescribeInstanceStatusCommand
-} = require('@aws-sdk/client-ec2');
+} from '@aws-sdk/client-ec2';
 
 process.env = Object.assign(process.env, require('../config/aws.json'));
 
@@ -12,7 +12,7 @@ const client = new EC2Client({ region: process.env.REGION || 'us-west-1' });
 class Instance {
     params;
 
-    constructor(id) {
+    constructor(id: string) {
         if (id == null) throw new Error('Instance id is required');
         this.params = { InstanceIds: [id] };
     }
@@ -26,6 +26,7 @@ class Instance {
                 })
             );
 
+            // @ts-ignore - It probably wont be undefined
             return response.InstanceStatuses[0].InstanceState.Name;
         } catch (err) {
             return err;
@@ -58,4 +59,5 @@ class Instance {
     }
 }
 
-exports.instance = new Instance(process.env.INSTANCE_ID);
+// @ts-ignore - This is loaded at the top of the file
+export const instance = new Instance(process.env.INSTANCE_ID);

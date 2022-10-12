@@ -1,7 +1,0 @@
-{
-  "type": "module",
-  "main": "src/pricing.js",
-  "dependencies": {
-    "table": "^6.8.0"
-  }
-}
