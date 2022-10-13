@@ -68,3 +68,5 @@ node_modules/
 # Firebase Config Files 
 .firebaserc
 firebase.json
+
+.DS_Store
