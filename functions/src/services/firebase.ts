@@ -12,9 +12,9 @@ const main = db.collection('main');
 const ipDocument = main.doc('ip'),
     timeDocument = main.doc('time');
 
-export const verify: (token: string, checkRevoked?: boolean) => Promise<boolean> = async (...args) => {
+export const verify = async (token: string): Promise<boolean> => {
     try {
-        auth.verifyIdToken(...args);
+        auth.verifyIdToken(token);
         return true;
     } catch (err) {
         return false;
