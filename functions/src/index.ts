@@ -33,7 +33,7 @@ exports.weekend = functions.pubsub
     .onRun(stop);
 
 // Additional API
-const api = express();
+export const api = express();
 
 // Authorization
 api.use(AuthMiddleware);
