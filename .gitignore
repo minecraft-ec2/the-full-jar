@@ -70,3 +70,5 @@ node_modules/
 firebase.json
 
 .DS_Store
+config
+functions/src/config/aws.json
