@@ -1,16 +1,27 @@
-import { Axios } from 'axios';
+import * as https from 'node:https';
 import { getTimeConstraints } from '../services/firebase';
 
 const cloneDate = (date: Date) => new Date(date.getTime());
 const isWeekday = () => ([1, 2, 3, 4, 5].includes((new Date()).getDay()));
 
-const axios = new Axios();
-
 export const isHours = async () => {
-    const now = new Date((await axios.get('https://timeapi.io/api/Time/current/zone', {
-        url: 'https://timeapi.io/api/Time/current/zone',
-        params: { timeZone: 'America/Los_Angeles' }
-    })).data.dateTime);
+    const now: Date = await new Promise((resolve, reject) => {
+        https.get('https://timeapi.io/api/Time/current/zone?timeZone=America/Los_Angeles', stream => {
+            let data = '';
+
+            stream.on('data', (chunk) => data += chunk);
+
+            stream.on('end', () => {
+                resolve(
+                    new Date(JSON.parse(
+                        data.toString()
+                    ).dateTime)
+                )
+            });
+
+            stream.on('error', reject);
+        });
+    });
 
     const times = await getTimeConstraints();
 

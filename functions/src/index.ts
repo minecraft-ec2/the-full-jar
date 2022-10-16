@@ -2,18 +2,13 @@
 import * as functions from 'firebase-functions';
 import * as express from 'express';
 
-// Import Firebases
+// Import Services
 import { instance } from './services/ec2';
-import { getIp } from './services/firebase';
+import { getApiKey, getIp, updateIp } from './services/firebase';
 
-// Import Middleware
-import { AuthMiddleware } from './middleware/auth';
-
-// Import API Routers
-import { IpRouter } from './api/ip';
-
-// Helpers
+// Validators
 import { isHours } from './helpers/time';
+import { isV4Format } from 'ip';
 
 // Auto Instance Stop
 const stop = async () => {
@@ -32,30 +27,56 @@ exports.weekend = functions.pubsub
     .timeZone('America/Los_Angeles')
     .onRun(stop);
 
-// Additional API
-export const api = express();
+// App Endpoints
+export const stats = functions.https.onCall(async (data, context) => {
+    if (context.auth != null) {
+        const [status, ip] = await Promise.all([
+            instance.status(),
+            getIp()
+        ]);
 
-// Authorization
-api.use(AuthMiddleware);
+        return {
+            status,
+            ip
+        };
+    };
 
-// API Routers
-api.use('/ip', IpRouter);
-
-export const stats = functions.https.onRequest(async (request, response) => {
-    const [status, ip] = await Promise.all([
-        instance.status(),
-        getIp()
-    ]);
-
-    console.log(await getIp())
-
-    response.status(200).json({ status, ip }).end();
+    return {
+        status: 'stopped',
+        ip: 'null'
+    };
 });
 
-export const start = functions.https.onCall(async () => {
+export const start = functions.https.onCall(async (data, context) => {
     if (await isHours() || process.env.FUNCTIONS_EMULATOR) {
         await instance.start();
+        return {
+            response: 'Instance start request successful'
+        }
     } else {
-        functions.logger.warn('Authorized server start request. Client check might have failed!');
+        functions.logger.warn(`Authorized server start request. Client check might have failed! [invoked by ${context.auth?.token.email}]`);
+        return {
+            response: 'Time out of bounds'
+        }
     }
 });
+
+// IP Endpoint
+const api = express();
+
+api.post('/ip', async ({ headers, body }, response) => {
+    if (headers.authorization !== await getApiKey()) {
+        functions.logger.warn('Unauthorized request!');
+        return response.status(401).json({ reason: 'unauthorized request' }).end();
+    };
+
+    if (!isV4Format(body.ip)) {
+        return response.status(400).json({ reason: 'invalid IP' }).end();
+    };
+
+    await updateIp(body.ip);
+    functions.logger.info('Successfully updated IP', body);
+    return response.status(200).end()
+});
+
+exports.api = functions.https.onRequest(api);

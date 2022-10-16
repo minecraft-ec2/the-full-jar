@@ -42,6 +42,7 @@ class Instance {
 
             return response.StartingInstances;
         } catch (err) {
+            console.error(err)
             return err;
         }
     }

@@ -14,16 +14,15 @@
   },
   "main": "lib/index.js",
   "dependencies": {
-    "@aws-sdk/client-ec2": "^3.186.0",
-    "axios": "^1.1.2",
+    "@aws-sdk/client-ec2": "^3.188.0",
     "express": "^4.18.2",
-    "firebase-admin": "^10.0.2",
-    "firebase-functions": "^3.18.0",
-    "ip": "^1.1.8"
+    "firebase-admin": "^11.1.0",
+    "firebase-functions": "^4.0.0-rc.0",
+    "ip": "^1.1.8",
+    "node-fetch": "^3.2.10"
   },
   "devDependencies": {
     "@types/ip": "^1.1.0",
-    "firebase-functions-test": "^0.2.0",
     "typescript": "^4.5.4"
   },
   "private": true
