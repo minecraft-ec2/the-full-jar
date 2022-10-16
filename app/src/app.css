@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+
+:root {
+    --tooltip-custom-offset: 7px;
+}
+
+/* 
+    https://github.com/saadeghi/daisyui/commit/11d5f852a96bcc364529e11d0856cbbfa49c363e#diff-6ec3b932fa70db169c2da8541d24a468cc2f2e1ff01ea76693571ef7d50fe6f7
+    Copied from the above commit. Only the 2nd term 
+    in the 'calc' operations have been edited
+    to be replaced by a custom offset 
+*/
+.tooltip {
+    display: inline-block;
+    --tooltip-offset: calc(100% + var(--tooltip-custom-offset) + var(--tooltip-tail, 0px));
+    --tooltip-tail-offset: calc(100% + var(--tooltip-custom-offset) - var(--tooltip-tail));
+}

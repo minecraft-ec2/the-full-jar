@@ -2,29 +2,69 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/cookie.ico" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Online</title>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/cookie.ico" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="title">Login</title>
 </head>
 
 <body>
-    <div class="w-screen h-screen pt-4">
-        <div class="mx-auto w-2/3 h-20 rounded-lg p-4 shadow-lg shadow-orange-400">
-            <button class="btn">Start Server</button>
-            <button class="btn btn-square btn-ghost float-right align-text-bottom mr-3 mb-3 font-bold">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-6 h-6">
-                    <path fill-rule="evenodd"
-                        d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z"
-                        clip-rule="evenodd" />
-                </svg>
-            </button>
+  <label class="hidden" for="login-modal"></label>
+  <input type="checkbox" id="login-modal" class="modal-toggle" />
+  <div id="modal" class="modal modal-bottom modal-close hidden sm:modal-middle">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">Login</h3>
+      <form id="form">
+        <div class="form-control w-full max-w-xs mt-4">
+          <label class="label" for="email-input">
+            <span class="label-text">Email</span>
+          </label>
+          <input id="email-input" class="input w-full max-w-xs" type="text" placeholder="Type here" />
+        </div>
+        <div class="form-control w-full max-w-xs mt-4">
+          <label class="label" for="password-input">
+            <span class="label-text">Password</span>
+          </label>
+          <input id="password-input" class="input w-full max-w-xs" type="password" placeholder="Type here" />
         </div>
 
+        <div class="modal-action">
+          <label id="modal-close-trigger" for="login-modal"></label>
+          <button class="btn" type="submit">Login</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div id="app" class="w-screen h-screen pt-4 hidden">
+    <div id="shadow" class="mx-auto w-2/3 rounded-lg p-4 shadow-lg shadow-red-400">
+      <div class="inline" data-tip="Why?">
+        <button id="start" class="btn">Start Server</button>
+      </div>
+      <button id="refresh" class="btn btn-square btn-ghost float-right align-text-bottom mr-3 mb-3 font-bold">
+        <svg id="refresh-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"
+          class="w-6 h-6">
+          <path fill-rule="evenodd"
+            d="M15.312 11.424a5.5 5.5 0 01-9.201 2.466l-.312-.311h2.433a.75.75 0 000-1.5H3.989a.75.75 0 00-.75.75v4.242a.75.75 0 001.5 0v-2.43l.31.31a7 7 0 0011.712-3.138.75.75 0 00-1.449-.39zm1.23-3.723a.75.75 0 00.219-.53V2.929a.75.75 0 00-1.5 0V5.36l-.31-.31A7 7 0 003.239 8.188a.75.75 0 101.448.389A5.5 5.5 0 0113.89 6.11l.311.31h-2.432a.75.75 0 000 1.5h4.243a.75.75 0 00.53-.219z"
+            clip-rule="evenodd" />
+        </svg>
+      </button>
+      <div class="w-full flex items-center justify-center">
+        <p id="ip" class="text-4xl font-extrabold text-blue-600 hover:underline hover:cursor-pointer"></p>
+      </div>
 
     </div>
 
-    <script type="module" src="/src/main.ts"></script>
+    <button id="logout"
+      class="btn btn-square btn-ghost align-text-bottom mr-4 mb-4 font-bold absolute right-0 bottom-0">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor"
+        class="w-6 h-6">
+        <path stroke-linecap="round" stroke-linejoin="round"
+          d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15m3 0l3-3m0 0l-3-3m3 3H9" />
+      </svg>
+    </button>
+  </div>
+  <script type="module" src="/src/main.js"></script>
 </body>
 
 </html>
