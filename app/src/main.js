@@ -15,15 +15,23 @@ const title = document.getElementById('title'),
     refreshButton = document.getElementById('refresh'),
     refreshIcon = document.getElementById('refresh-icon'),
     nonElevatedUserModalTrigger = document.getElementById('non-elevated-user-modal-trigger'),
-    timeBoundsModalTrigger = document.getElementById('time-bounds-modal-trigger');
-;
+    timeBoundsModalTrigger = document.getElementById('time-bounds-modal-trigger'),
+    toastContainer = document.getElementById('toast-container');
 
+// Variables
 const COLORS = {
     'stopped': 'red',
     'pending': 'orange',
     'stopping': 'red',
     'running': 'green'
-};
+}, TOAST_HTML = `
+    <div id="toast-{id}" class="toast toast-end mb-12">
+        <div class="alert alert-info">
+            <div>
+                <span>Copied To Clipboard!</span>
+            </div>
+        </div>
+    </div>`;
 
 // Credit (& explanation): https://www.freecodecamp.org/news/javascript-debounce-example/
 const debounce = (func, timeout = 300) => {
@@ -105,7 +113,6 @@ document.getElementById('logout').addEventListener('click', async () => {
     window.location.reload();
 });
 
-
 // Start Button
 document.getElementById('start').addEventListener('click', debounce(async (event) => {
     // Ignore Disabled Button
@@ -139,3 +146,22 @@ refreshButton.addEventListener('click', debounce(async (event) => {
         refreshIcon.classList.remove('hidden');
     });
 }));
+
+// Copy IP on click
+ipElement.addEventListener('click', event => {
+    const text = event.currentTarget.innerText;
+    // Only proceed if server is online
+    if (text.indexOf('.') !== -1) {
+        navigator.clipboard.writeText(text);
+
+        // Show Alert
+        const id = toastContainer.children.length + 1;
+        const html = TOAST_HTML.replace('{id}', id);
+
+        toastContainer.innerHTML += html;
+
+        setTimeout(() => {
+            document.getElementById('toast-' + id).remove();
+        }, 3000);
+    };
+});
