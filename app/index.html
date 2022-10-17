@@ -36,6 +36,31 @@
     </div>
   </div>
 
+  <label id="non-elevated-user-modal-trigger" for="non-elevated-user-modal" class="btn modal-button hidden"></label>
+  <input type="checkbox" id="non-elevated-user-modal" class="modal-toggle" />
+  <div class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">Uh Oh!</h3>
+      <p class="py-4">You're not an elevated user so you can't start the server. DM me if you have any questions.</p>
+      <div class="modal-action">
+        <label for="non-elevated-user-modal" class="btn">Ok</label>
+      </div>
+    </div>
+  </div>
+
+  <label id="time-bounds-modal-trigger" for="time-bounds-modal" class="btn modal-button hidden"></label>
+  <input type="checkbox" id="time-bounds-modal" class="modal-toggle" />
+  <div class="modal modal-bottom sm:modal-middle">
+    <div class="modal-box">
+      <h3 class="font-bold text-lg">Oops!</h3>
+      <p class="py-4">You can't start the server right now becuase it's out of the time bounds. DM me if you have any
+        questions.</p>
+      <div class="modal-action">
+        <label for="time-bounds-modal" class="btn">Ok</label>
+      </div>
+    </div>
+  </div>
+
   <div id="app" class="w-screen h-screen pt-4 hidden">
     <div id="shadow" class="mx-auto w-2/3 rounded-lg p-4 shadow-lg shadow-red-400">
       <div class="inline" data-tip="Why?">

@@ -1,7 +1,7 @@
 // Imports
 import './app.css';
 
-import { addAuthListener, login, logout, start, stats } from './utils/firebase';
+import { addAuthListener, login, logout, start, stats, isElevatedUser } from './utils/firebase';
 
 // Elements
 const title = document.getElementById('title'),
@@ -13,7 +13,10 @@ const title = document.getElementById('title'),
     ipElement = document.getElementById('ip'),
     startButton = document.getElementById('start'),
     refreshButton = document.getElementById('refresh'),
-    refreshIcon = document.getElementById('refresh-icon');
+    refreshIcon = document.getElementById('refresh-icon'),
+    nonElevatedUserModalTrigger = document.getElementById('non-elevated-user-modal-trigger'),
+    timeBoundsModalTrigger = document.getElementById('time-bounds-modal-trigger');
+;
 
 const COLORS = {
     'stopped': 'red',
@@ -108,7 +111,14 @@ document.getElementById('start').addEventListener('click', debounce(async (event
     // Ignore Disabled Button
     if (!event.currentTarget.classList.contains('no-animation')) {
         try {
-            console.log(await start());
+            if (await isElevatedUser()) {
+                const { response } = await start();
+                if (response === 'Time out of bounds') {
+                    timeBoundsModalTrigger.click();
+                }
+            } else {
+                nonElevatedUserModalTrigger.click();
+            }
         } catch (err) {
             console.log(err, err.message);
         }
@@ -123,7 +133,7 @@ refreshButton.addEventListener('click', debounce(async (event) => {
     refreshIcon.classList.add('hidden');
     refreshButton.classList.add('loading');
 
-    refresh().then((isRunning) => {
+    refresh().then(isRunning => {
         title.innerText = isRunning ? 'Online' : 'Offline';
         refreshButton.classList.remove('loading');
         refreshIcon.classList.remove('hidden');
