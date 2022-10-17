@@ -4,6 +4,9 @@ import { getFirestore, doc, getDoc } from 'firebase/firestore';
 import { getFunctions, httpsCallable } from 'firebase/functions';
 
 const app = initializeApp({
+    // Change the follwing for your application. Have 2 api keys, one for production and one for development
+    // The production key should be whitelisted to only your production domain while the development key
+    // should be whitelisted only to your IP
     apiKey: import.meta.env.PROD ? 'AIzaSyCGn4BO1ODLIR23pmmJ0aSqsyRMu_cmnyk' : 'AIzaSyA82-4qHPLRVug60YtQVM-t-x48nslDTak',
     authDomain: 'cookie-jar-smp.firebaseapp.com',
     projectId: 'cookie-jar-smp',
