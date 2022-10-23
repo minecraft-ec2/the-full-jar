@@ -18,3 +18,12 @@
     --tooltip-offset: calc(100% + var(--tooltip-custom-offset) + var(--tooltip-tail, 0px));
     --tooltip-tail-offset: calc(100% + var(--tooltip-custom-offset) - var(--tooltip-tail));
 }
+
+.bmac-button {
+    background-color: transparent;
+    border: none;
+}
+
+.bmac-button:hover {
+    background-color: transparent;
+}
